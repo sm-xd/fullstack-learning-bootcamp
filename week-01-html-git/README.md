@@ -36,4 +36,4 @@ A personal resume/profile page for **Sumit Mishra** built using pure semantic HT
 
 ## 🏆 Lighthouse Score
 
-![Lighthouse Score](./assests/lighthouse.png)
+![Lighthouse Score](./assests/LighthouseTest.png)
