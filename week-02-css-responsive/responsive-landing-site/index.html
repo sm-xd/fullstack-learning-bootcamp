@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Artify - Discover beautiful artwork from talented artists around the world">
+    <title>Artify | Art Store - Discover Beautiful Artwork</title>
+    <!-- Link to external stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts for elegant typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- HEADER & NAVIGATION -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <!-- Logo / Brand Name -->
+                <a href="#" class="logo">Artify</a>
+
+                <!-- Mobile Menu Toggle (CSS-only hamburger) -->
+                <input type="checkbox" id="nav-toggle" class="nav-toggle">
+                <label for="nav-toggle" class="nav-toggle-label">
+                    <span></span>
+                </label>
+
+                <!-- Navigation Links -->
+                <ul class="nav-links">
+                    <li><a href="#home" class="nav-link active">Home</a></li>
+                    <li><a href="#gallery" class="nav-link">Gallery</a></li>
+                    <li><a href="#collections" class="nav-link">Collections</a></li>
+                    <li><a href="#about" class="nav-link">About</a></li>
+                    <li><a href="#contact" class="nav-link">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- HERO SECTION -->
+        <section id="home" class="hero">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <h1 class="hero-title">Discover Art That Speaks to Your Soul</h1>
+                <p class="hero-tagline">Curated masterpieces from emerging and established artists worldwide</p>
+                <a href="#gallery" class="btn btn-primary">Explore Art</a>
+            </div>
+        </section>
+
+        <!-- FEATURED GALLERY -->
+        <section id="gallery" class="gallery">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Featured Artwork</h2>
+                    <p class="section-subtitle">Handpicked pieces from our exclusive collection</p>
+                </div>
+                <div class="gallery-grid">
+                    <article class="art-card">
+                        <div class="art-card-image">
+                            <img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=500&fit=crop"
+                                alt="Abstract painting with vibrant colors">
+                        </div>
+                        <div class="art-card-content">
+                            <h3 class="art-title">Ethereal Dreams</h3>
+                            <p class="art-artist">By Sarah Mitchell</p>
+                            <p class="art-price">$1,250</p>
+                        </div>
+                    </article>
+                    <article class="art-card">
+                        <div class="art-card-image">
+                            <img src="https://images.unsplash.com/photo-1549887534-1541e9326642?w=400&h=500&fit=crop"
+                                alt="Modern geometric art piece">
+                        </div>
+                        <div class="art-card-content">
+                            <h3 class="art-title">Urban Geometry</h3>
+                            <p class="art-artist">By James Chen</p>
+                            <p class="art-price">$890</p>
+                        </div>
+                    </article>
+                    <article class="art-card">
+                        <div class="art-card-image">
+                            <img src="https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=400&h=500&fit=crop"
+                                alt="Nature-inspired watercolor">
+                        </div>
+                        <div class="art-card-content">
+                            <h3 class="art-title">Botanical Whispers</h3>
+                            <p class="art-artist">By Emma Roberts</p>
+                            <p class="art-price">$675</p>
+                        </div>
+                    </article>
+                    <article class="art-card">
+                        <div class="art-card-image">
+                            <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=400&h=500&fit=crop"
+                                alt="Portrait artwork">
+                        </div>
+                        <div class="art-card-content">
+                            <h3 class="art-title">Silent Reflection</h3>
+                            <p class="art-artist">By Marcus Brown</p>
+                            <p class="art-price">$1,450</p>
+                        </div>
+                    </article>
+                    <article class="art-card">
+                        <div class="art-card-image">
+                            <img src="https://images.unsplash.com/photo-1544967082-d9d25d867d66?w=400&h=500&fit=crop"
+                                alt="Minimalist sculpture">
+                        </div>
+                        <div class="art-card-content">
+                            <h3 class="art-title">Serene Motion</h3>
+                            <p class="art-artist">By Yuki Tanaka</p>
+                            <p class="art-price">$2,100</p>
+                        </div>
+                    </article>
+                    <article class="art-card">
+                        <div class="art-card-image">
+                            <img src="https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?w=400&h=500&fit=crop"
+                                alt="Abstract landscape">
+                        </div>
+                        <div class="art-card-content">
+                            <h3 class="art-title">Horizon Lines</h3>
+                            <p class="art-artist">By Olivia Grant</p>
+                            <p class="art-price">$980</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT SECTION -->
+        <section id="about" class="about">
+            <div class="container">
+                <div class="about-content">
+                    <div class="about-text">
+                        <h2 class="section-title">Our Story</h2>
+                        <p class="about-description">
+                            Founded in 2020, Artify began with a simple vision: to bridge the gap between talented
+                            artists
+                            and art enthusiasts around the world. We believe that art has the power to transform spaces,
+                            evoke emotions, and tell stories that words cannot express.
+                        </p>
+                        <p class="about-description">
+                            Every piece in our collection is carefully curated to ensure authenticity, quality, and
+                            artistic
+                            excellence. We partner directly with artists to bring you original works that will become
+                            cherished additions to your collection.
+                        </p>
+                        <a href="#contact" class="btn btn-secondary">Learn More</a>
+                    </div>
+                    <div class="about-image">
+                        <img src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&h=400&fit=crop"
+                            alt="Art gallery interior">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- COLLECTIONS -->
+        <section id="collections" class="collections">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Explore Collections</h2>
+                    <p class="section-subtitle">Browse art by category and find your perfect piece</p>
+                </div>
+                <div class="collections-grid">
+                    <article class="collection-card collection-pink"><span class="collection-icon">🎨</span>
+                        <h3 class="collection-title">Abstract Art</h3>
+                        <p class="collection-count">127 Artworks</p>
+                    </article>
+                    <article class="collection-card collection-lavender"><span class="collection-icon">🖼️</span>
+                        <h3 class="collection-title">Portraits</h3>
+                        <p class="collection-count">89 Artworks</p>
+                    </article>
+                    <article class="collection-card collection-mint"><span class="collection-icon">🌿</span>
+                        <h3 class="collection-title">Nature</h3>
+                        <p class="collection-count">156 Artworks</p>
+                    </article>
+                    <article class="collection-card collection-blue"><span class="collection-icon">✨</span>
+                        <h3 class="collection-title">Modern</h3>
+                        <p class="collection-count">203 Artworks</p>
+                    </article>
+                    <article class="collection-card collection-cream"><span class="collection-icon">🏛️</span>
+                        <h3 class="collection-title">Classical</h3>
+                        <p class="collection-count">64 Artworks</p>
+                    </article>
+                    <article class="collection-card collection-pink"><span class="collection-icon">📷</span>
+                        <h3 class="collection-title">Photography</h3>
+                        <p class="collection-count">98 Artworks</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- TESTIMONIALS -->
+        <section class="testimonials">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">What Our Collectors Say</h2>
+                    <p class="section-subtitle">Trusted by art lovers worldwide</p>
+                </div>
+                <div class="testimonials-grid">
+                    <article class="testimonial-card">
+                        <p class="testimonial-text">"Artify made finding the perfect piece for my living room so easy.
+                            The quality exceeded my expectations!"</p>
+                        <div class="testimonial-author">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=60&h=60&fit=crop"
+                                alt="Jennifer" class="author-image">
+                            <div>
+                                <h4 class="author-name">Jennifer Adams</h4>
+                                <p class="author-title">Interior Designer</p>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="testimonial-card">
+                        <p class="testimonial-text">"As a first-time art buyer, Artify's curated selection helped me
+                            make a confident choice."</p>
+                        <div class="testimonial-author">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&h=60&fit=crop"
+                                alt="Michael" class="author-image">
+                            <div>
+                                <h4 class="author-name">Michael Torres</h4>
+                                <p class="author-title">Tech Entrepreneur</p>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="testimonial-card">
+                        <p class="testimonial-text">"I've purchased three stunning pieces from Artify. The artists they
+                            work with are truly talented!"</p>
+                        <div class="testimonial-author">
+                            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=60&h=60&fit=crop"
+                                alt="Sarah" class="author-image">
+                            <div>
+                                <h4 class="author-name">Sarah Mitchell</h4>
+                                <p class="author-title">Art Collector</p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- HIGHLIGHTS -->
+        <section class="highlights">
+            <div class="container">
+                <div class="highlights-grid">
+                    <div class="highlight-item"><span class="highlight-icon">🎨</span>
+                        <h3 class="highlight-number">500+</h3>
+                        <p class="highlight-label">Artworks</p>
+                    </div>
+                    <div class="highlight-item"><span class="highlight-icon">👩‍🎨</span>
+                        <h3 class="highlight-number">150+</h3>
+                        <p class="highlight-label">Artists</p>
+                    </div>
+                    <div class="highlight-item"><span class="highlight-icon">🌍</span>
+                        <h3 class="highlight-number">30+</h3>
+                        <p class="highlight-label">Countries</p>
+                    </div>
+                    <div class="highlight-item"><span class="highlight-icon">⭐</span>
+                        <h3 class="highlight-number">2000+</h3>
+                        <p class="highlight-label">Collectors</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer id="contact" class="footer">
+        <div class="container">
+            <h3 class="footer-logo">Artify</h3>
+            <p class="footer-tagline">Connecting artists with collectors worldwide</p>
+            <div class="social-links">
+                <a href="#" class="social-link" aria-label="Facebook">📘</a>
+                <a href="#" class="social-link" aria-label="Instagram">📸</a>
+                <a href="#" class="social-link" aria-label="Twitter">🐦</a>
+                <a href="#" class="social-link" aria-label="Pinterest">📌</a>
+            </div>
+            <p class="copyright">&copy; 2026 Artify. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>
