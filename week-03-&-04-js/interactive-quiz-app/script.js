@@ -1,35 +1,61 @@
 const quizData = [
     {
-        question: "What is the capital of France?",
-        options: ["Berlin", "Madrid", "Paris", "Rome"],
+        question: "What does REST stand for in RESTful APIs?",
+        options: [
+            "Remote Execution Standard Transfer",
+            "Representational State Transfer",
+            "Reliable Service Transport",
+            "Recursive State Technology"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Which HTTP status code represents 'Unauthorized'?",
+        options: ["200", "401", "403", "500"],
+        correctAnswer: 1
+    },
+    {
+        question: "In JavaScript, which method converts a JSON string into an object?",
+        options: ["JSON.parse()", "JSON.stringify()", "JSON.convert()", "JSON.object()"],
+        correctAnswer: 0
+    },
+    {
+        question: "What is the time complexity of binary search on a sorted array?",
+        options: ["O(n)", "O(log n)", "O(n log n)", "O(1)"],
+        correctAnswer: 1
+    },
+    {
+        question: "Which Git command is used to combine changes from another branch into the current branch?",
+        options: ["git push", "git merge", "git clone", "git init"],
+        correctAnswer: 1
+    },
+    {
+        question: "Which SQL clause is used to filter aggregated results?",
+        options: ["WHERE", "GROUP BY", "HAVING", "ORDER BY"],
         correctAnswer: 2
     },
     {
-        question: "Which planet is known as the Red Planet?",
-        options: ["Earth", "Mars", "Jupiter", "Saturn"],    
+        question: "In CSS Flexbox, which property controls alignment along the main axis?",
+        options: ["align-items", "justify-content", "flex-wrap", "align-content"],
         correctAnswer: 1
     },
     {
-        question: "What is the largest ocean on Earth?",
-        options: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean", "Pacific Ocean"],   
-        correctAnswer: 3
-    },
-    {
-        question: "Who wrote 'Romeo and Juliet'?",
-        options: ["Charles Dickens", "William Shakespeare", "Mark Twain", "Jane Austen"],
+        question: "Which data structure uses LIFO (Last In First Out)?",
+        options: ["Queue", "Stack", "Heap", "Graph"],
         correctAnswer: 1
     },
     {
-        question: "What is the chemical symbol for water?",
-        options: ["O2", "H2O", "CO2", "NaCl"],
-        correctAnswer: 1
+        question: "What is the default port for HTTPS?",
+        options: ["21", "80", "443", "3306"],
+        correctAnswer: 2
     },
     {
-        question: "Is Rushi chakla?",
-        options: ["yes", "very much", "definitely", "all of the above"],
-        correctAnswer: 3
+        question: "Which JavaScript feature allows handling asynchronous operations using cleaner syntax than promises?",
+        options: ["Callbacks", "Generators", "Async/Await", "Closures"],
+        correctAnswer: 2
     }
 ];
+
 
 let currentQuestionIndex = 0;
 let score = 0;
@@ -37,7 +63,7 @@ let selectedAnswer = null;
 let isQuizComplete = false;
 let timeLeft = 60;
 let timerInterval = null;
-let userAnswers = []; // Store user's answers for each question
+let userAnswers = []; 
 
 const startScreen = document.getElementById('start-screen');
 const startButton = document.getElementById('start-quiz-btn');
@@ -53,9 +79,28 @@ const reviewButton = document.getElementById('review-btn');
 const reviewSection = document.getElementById('review-section');
 const reviewContainer = document.getElementById('review-container');
 const timerDisplay = document.getElementById('timer');
-const progressBar = document.getElementById('progress-bar');
-const progressFill = document.getElementById('progress-fill');
 const progressText = document.getElementById('progress-text');
+const questionPanel = document.getElementById('questions-panel');
+const quizScreen = document.getElementById('quiz-screen');
+const questionPanelToggle = document.getElementById('question-panel-toggle');
+const mobileOverlay = document.getElementById('mobile-overlay');
+
+// Mobile panel toggle functions
+function openMobilePanel() {
+    if (questionPanel && mobileOverlay) {
+        mobileOverlay.classList.add('active');
+        questionPanel.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeMobilePanel() {
+    if (questionPanel && mobileOverlay) {
+        questionPanel.classList.remove('active');
+        mobileOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
 
 function startQuiz() {
 
@@ -70,15 +115,68 @@ function startQuiz() {
         startScreen.classList.add('hidden');
     }
     
-    quizArea.hidden = false;
-    quizArea.classList.remove('hidden');
+    quizScreen.removeAttribute('hidden');
+    quizScreen.classList.remove('hidden');
+    quizScreen.classList.add('active');
     
-    resultsScreen.hidden = true;
+    resultsScreen.setAttribute('hidden', '');
     resultsScreen.classList.add('hidden');
+    resultsScreen.classList.remove('active');
     
     startTimer();
     
     displayQuestion();
+    loadQuestionPanel();
+}
+
+function loadQuestionPanel() {
+    questionPanel.innerHTML = '';
+    
+    const header = document.createElement('h3');
+    header.textContent = 'Question Index';
+    header.addEventListener('click', () => {
+        if (window.innerWidth <= 640) {
+            closeMobilePanel();
+        }
+    });
+    questionPanel.appendChild(header);
+    
+    const itemsContainer = document.createElement('div');
+    itemsContainer.className = 'question-panel-items';
+    
+    quizData.forEach((question, index) => {
+        const questionDiv = document.createElement('div');
+        questionDiv.className = 'question-panel-item';
+        questionDiv.id = `question-panel-item-${index}`;
+        questionDiv.textContent = `Question ${index + 1}`;
+        questionDiv.addEventListener('click', () => {
+            currentQuestionIndex = index;
+            displayQuestion();
+            if (window.innerWidth <= 640) {
+                closeMobilePanel();
+            }
+        });
+        itemsContainer.appendChild(questionDiv);
+    });
+    
+    questionPanel.appendChild(itemsContainer);
+    document.getElementById(`question-panel-item-0`).classList.add('current');
+}
+
+function updateQuestionPanelStatus() {
+    quizData.forEach((question, index) => {
+        const panelItem = document.getElementById(`question-panel-item-${index}`);
+        if (panelItem) {
+            panelItem.classList.remove('answered', 'current');
+            if (userAnswers[index] !== null) {
+                panelItem.classList.add('answered');
+            }
+            
+            if (index === currentQuestionIndex) {
+                panelItem.classList.add('current');
+            }
+        }
+    });
 }
 
 function displayQuestion() {
@@ -113,16 +211,11 @@ function displayQuestion() {
         optionsContainer.appendChild(optionButton);
     });
     
-    const progressPercent = ((currentQuestionIndex) / quizData.length) * 100;
-    if (progressFill) {
-        progressFill.style.width = `${progressPercent}%`;
-    }
-    if (progressBar) {
-        progressBar.setAttribute('aria-valuenow', progressPercent);
-    }
     if (progressText) {
         progressText.textContent = `Question ${currentQuestionIndex + 1} of ${quizData.length}`;
     }
+    
+    updateQuestionPanelStatus();
 }
 
 function selectAnswer(selectedIndex) {
@@ -138,6 +231,8 @@ function selectAnswer(selectedIndex) {
         optionButtons.forEach(btn => btn.classList.remove('selected'));
         optionButtons[selectedIndex].classList.add('selected');
     }
+    
+    updateQuestionPanelStatus();
 }
 
 function checkAnswer() {
@@ -178,9 +273,12 @@ function showResults() {
 
     isQuizComplete = true;
     stopTimer();
-    quizArea.hidden = true;
-    quizArea.classList.add('hidden');
-    resultsScreen.hidden = false;
+    
+    quizScreen.setAttribute('hidden', '');
+    quizScreen.classList.add('hidden');
+    quizScreen.classList.remove('active');
+    
+    resultsScreen.removeAttribute('hidden');
     resultsScreen.classList.remove('hidden');
     
     score = 0;
@@ -213,11 +311,14 @@ function showResults() {
 }
 
 function restartQuiz() {
-    resultsScreen.hidden = true;
+    resultsScreen.setAttribute('hidden', '');
     resultsScreen.classList.add('hidden');
     
     if (reviewSection) {
         reviewSection.classList.add('hidden');
+    }
+    if (reviewButton) {
+        reviewButton.textContent = 'Review';
     }
     
     currentQuestionIndex = 0;
@@ -233,7 +334,7 @@ function showReview() {
     
     if (reviewSection.classList.contains('hidden')) {
         reviewSection.classList.remove('hidden');
-        reviewButton.textContent = 'Review';
+        reviewButton.textContent = 'Hide Review';
         
         reviewContainer.innerHTML = '';
         
@@ -247,12 +348,9 @@ function showReview() {
             
             const questionHeader = document.createElement('div');
             questionHeader.className = 'review-question';
-            questionHeader.innerHTML = `
-                <span class="review-question-number">Q${index + 1}.</span> ${question.question}
-                <span class="review-status ${isUnanswered ? 'skipped' : (isCorrect ? 'correct' : 'wrong')}">
-                    ${isUnanswered ? 'Skipped' : (isCorrect ? '✓ Correct' : '✗ Wrong')}
-                </span>
-            `;
+            const statusClass = isUnanswered ? 'skipped' : (isCorrect ? 'correct' : 'wrong');
+            const statusText = isUnanswered ? 'Skipped' : (isCorrect ? '✓ Correct' : '✗ Wrong');
+            questionHeader.innerHTML = `<span class="review-question-number">Q${index + 1}.</span> ${question.question} <span class="review-status ${statusClass}">${statusText}</span>`;
             reviewItem.appendChild(questionHeader);
             
             const optionsDiv = document.createElement('div');
@@ -306,16 +404,12 @@ function updateTimer() {
     if (timerDisplay) {
         timerDisplay.textContent = `Time Left: ${timeLeft}s`;
         
-        if (timeLeft <= 10) {
-            timerDisplay.classList.add('warning');
-        } else {
-            timerDisplay.classList.remove('warning');
-        }
+        timerDisplay.classList.remove('warning', 'danger');
         
-        if (timeLeft <= 5) {
+        if (timeLeft <= 10 && timeLeft > 5) {
+            timerDisplay.classList.add('warning');
+        } else if (timeLeft <= 5) {
             timerDisplay.classList.add('danger');
-        } else {
-            timerDisplay.classList.remove('danger');
         }
     }
 }
@@ -340,6 +434,7 @@ function shuffleArray(array) {
     return array;
 }
 
+// Event listeners
 if (startButton) {
     startButton.addEventListener('click', startQuiz);
 }
@@ -358,4 +453,12 @@ if (restartButton) {
 
 if (reviewButton) {
     reviewButton.addEventListener('click', showReview);
+}
+
+if (questionPanelToggle) {
+    questionPanelToggle.addEventListener('click', openMobilePanel);
+}
+
+if (mobileOverlay) {
+    mobileOverlay.addEventListener('click', closeMobilePanel);
 }
