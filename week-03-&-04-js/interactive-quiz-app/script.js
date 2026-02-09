@@ -63,7 +63,7 @@ let selectedAnswer = null;
 let isQuizComplete = false;
 let timeLeft = 60;
 let timerInterval = null;
-let userAnswers = []; 
+let userAnswers = [];
 
 const startScreen = document.getElementById('start-screen');
 const startButton = document.getElementById('start-quiz-btn');
@@ -85,7 +85,6 @@ const quizScreen = document.getElementById('quiz-screen');
 const questionPanelToggle = document.getElementById('question-panel-toggle');
 const mobileOverlay = document.getElementById('mobile-overlay');
 
-// Mobile panel toggle functions
 function openMobilePanel() {
     if (questionPanel && mobileOverlay) {
         mobileOverlay.classList.add('active');
@@ -110,28 +109,28 @@ function startQuiz() {
     isQuizComplete = false;
     timeLeft = 60;
     userAnswers = new Array(quizData.length).fill(null);
-    
+
     if (startScreen) {
         startScreen.classList.add('hidden');
     }
-    
+
     quizScreen.removeAttribute('hidden');
     quizScreen.classList.remove('hidden');
     quizScreen.classList.add('active');
-    
+
     resultsScreen.setAttribute('hidden', '');
     resultsScreen.classList.add('hidden');
     resultsScreen.classList.remove('active');
-    
+
     startTimer();
-    
+
     displayQuestion();
     loadQuestionPanel();
 }
 
 function loadQuestionPanel() {
     questionPanel.innerHTML = '';
-    
+
     const header = document.createElement('h3');
     header.textContent = 'Question Index';
     header.addEventListener('click', () => {
@@ -140,10 +139,10 @@ function loadQuestionPanel() {
         }
     });
     questionPanel.appendChild(header);
-    
+
     const itemsContainer = document.createElement('div');
     itemsContainer.className = 'question-panel-items';
-    
+
     quizData.forEach((question, index) => {
         const questionDiv = document.createElement('div');
         questionDiv.className = 'question-panel-item';
@@ -158,7 +157,7 @@ function loadQuestionPanel() {
         });
         itemsContainer.appendChild(questionDiv);
     });
-    
+
     questionPanel.appendChild(itemsContainer);
     document.getElementById(`question-panel-item-0`).classList.add('current');
 }
@@ -171,7 +170,7 @@ function updateQuestionPanelStatus() {
             if (userAnswers[index] !== null) {
                 panelItem.classList.add('answered');
             }
-            
+
             if (index === currentQuestionIndex) {
                 panelItem.classList.add('current');
             }
@@ -182,45 +181,45 @@ function updateQuestionPanelStatus() {
 function displayQuestion() {
 
     const currentQuestion = quizData[currentQuestionIndex];
-    
+
     questionText.textContent = currentQuestion.question;
-    
+
     optionsContainer.innerHTML = '';
-    
+
     selectedAnswer = userAnswers[currentQuestionIndex];
-    
+
     nextButton.disabled = false;
     prevButton.disabled = currentQuestionIndex === 0;
-    
+
     if (currentQuestionIndex === quizData.length - 1) {
         nextButton.textContent = 'Submit Quiz';
     } else {
         nextButton.textContent = 'Next Question';
     }
-    
+
     currentQuestion.options.forEach((option, index) => {
         const optionButton = document.createElement('button');
         optionButton.classList.add('option-btn');
         optionButton.textContent = option;
-        
+
         if (userAnswers[currentQuestionIndex] === index) {
             optionButton.classList.add('selected');
         }
-        
+
         optionButton.addEventListener('click', () => selectAnswer(index));
         optionsContainer.appendChild(optionButton);
     });
-    
+
     if (progressText) {
         progressText.textContent = `Question ${currentQuestionIndex + 1} of ${quizData.length}`;
     }
-    
+
     updateQuestionPanelStatus();
 }
 
 function selectAnswer(selectedIndex) {
     const optionButtons = optionsContainer.querySelectorAll('.option-btn');
-    
+
     if (selectedAnswer === selectedIndex) {
         selectedAnswer = null;
         userAnswers[currentQuestionIndex] = null;
@@ -231,7 +230,7 @@ function selectAnswer(selectedIndex) {
         optionButtons.forEach(btn => btn.classList.remove('selected'));
         optionButtons[selectedIndex].classList.add('selected');
     }
-    
+
     updateQuestionPanelStatus();
 }
 
@@ -273,21 +272,21 @@ function showResults() {
 
     isQuizComplete = true;
     stopTimer();
-    
+
     quizScreen.setAttribute('hidden', '');
     quizScreen.classList.add('hidden');
     quizScreen.classList.remove('active');
-    
+
     resultsScreen.removeAttribute('hidden');
     resultsScreen.classList.remove('hidden');
-    
+
     score = 0;
     quizData.forEach((question, index) => {
         if (userAnswers[index] === question.correctAnswer) {
             score++;
         }
     });
-    
+
     const percentage = Math.round((score / quizData.length) * 100);
     finalScoreText.textContent = `You scored ${score} out of ${quizData.length}! (${percentage}%)`;
     let message = '';
@@ -300,7 +299,7 @@ function showResults() {
     } else {
         message = 'Keep practicing! You can do better!';
     }
-    
+
     let messageElement = document.getElementById('result-message');
     if (!messageElement) {
         messageElement = document.createElement('p');
@@ -313,14 +312,14 @@ function showResults() {
 function restartQuiz() {
     resultsScreen.setAttribute('hidden', '');
     resultsScreen.classList.add('hidden');
-    
+
     if (reviewSection) {
         reviewSection.classList.add('hidden');
     }
     if (reviewButton) {
         reviewButton.textContent = 'Review';
     }
-    
+
     currentQuestionIndex = 0;
     score = 0;
     selectedAnswer = null;
@@ -331,35 +330,35 @@ function restartQuiz() {
 
 function showReview() {
     if (!reviewSection || !reviewContainer) return;
-    
+
     if (reviewSection.classList.contains('hidden')) {
         reviewSection.classList.remove('hidden');
         reviewButton.textContent = 'Hide Review';
-        
+
         reviewContainer.innerHTML = '';
-        
+
         quizData.forEach((question, index) => {
             const userAnswer = userAnswers[index];
             const isCorrect = userAnswer === question.correctAnswer;
             const isUnanswered = userAnswer === null;
-            
+
             const reviewItem = document.createElement('div');
             reviewItem.className = `review-item ${isUnanswered ? 'unanswered' : (isCorrect ? 'correct-answer' : 'wrong-answer')}`;
-            
+
             const questionHeader = document.createElement('div');
             questionHeader.className = 'review-question';
             const statusClass = isUnanswered ? 'skipped' : (isCorrect ? 'correct' : 'wrong');
             const statusText = isUnanswered ? 'Skipped' : (isCorrect ? '✓ Correct' : '✗ Wrong');
             questionHeader.innerHTML = `<span class="review-question-number">Q${index + 1}.</span> ${question.question} <span class="review-status ${statusClass}">${statusText}</span>`;
             reviewItem.appendChild(questionHeader);
-            
+
             const optionsDiv = document.createElement('div');
             optionsDiv.className = 'review-options';
-            
+
             question.options.forEach((option, optIndex) => {
                 const optionDiv = document.createElement('div');
                 optionDiv.className = 'review-option';
-                
+
                 let icon = '';
                 if (optIndex === question.correctAnswer) {
                     optionDiv.classList.add('correct');
@@ -372,11 +371,11 @@ function showReview() {
                 if (userAnswer === optIndex && isCorrect) {
                     optionDiv.classList.add('user-correct');
                 }
-                
+
                 optionDiv.textContent = `${icon}${option}`;
                 optionsDiv.appendChild(optionDiv);
             });
-            
+
             reviewItem.appendChild(optionsDiv);
             reviewContainer.appendChild(reviewItem);
         });
@@ -400,12 +399,12 @@ function startTimer() {
     }, 1000);
 }
 
-function updateTimer() {    
+function updateTimer() {
     if (timerDisplay) {
         timerDisplay.textContent = `Time Left: ${timeLeft}s`;
-        
+
         timerDisplay.classList.remove('warning', 'danger');
-        
+
         if (timeLeft <= 10 && timeLeft > 5) {
             timerDisplay.classList.add('warning');
         } else if (timeLeft <= 5) {
@@ -414,7 +413,7 @@ function updateTimer() {
     }
 }
 
-function stopTimer() {    
+function stopTimer() {
     if (timerInterval) {
         clearInterval(timerInterval);
         timerInterval = null;
@@ -426,7 +425,7 @@ function handleTimeUp() {
     showResults();
 }
 
-function shuffleArray(array) {    
+function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
@@ -434,7 +433,6 @@ function shuffleArray(array) {
     return array;
 }
 
-// Event listeners
 if (startButton) {
     startButton.addEventListener('click', startQuiz);
 }

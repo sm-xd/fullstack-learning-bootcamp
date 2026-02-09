@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice 03: Async/Await</title>
+</head>
+
+<body>
+    <h1>Async/Await</h1>
+
+    <div class="exercise">
+        <h2>Syntax Comparison</h2>
+        <div class="comparison">
+            <div>
+                <h3>Promise .then()</h3>
+                <pre>fetchData()
+  .then(data => {
+    return process(data);
+  })
+  .then(result => {
+    console.log(result);
+  })
+  .catch(err => {
+    console.error(err);
+  });</pre>
+            </div>
+            <div>
+                <h3>async/await</h3>
+                <pre>async function getData() {
+  try {
+    const data = await fetchData();
+    const result = await process(data);
+    console.log(result);
+  } catch (err) {
+    console.error(err);
+  }
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="exercise">
+        <h2>Exercise 1: Basic async/await</h2>
+        <p>Converting promises to async/await syntax.</p>
+        <button onclick="runExercise1()">Run Exercise 1</button>
+    </div>
+
+    <div class="exercise">
+        <h2>Exercise 2: Sequential vs Parallel</h2>
+        <p>Understanding when operations run in sequence or parallel.</p>
+        <button onclick="runExercise2()">Run Exercise 2</button>
+    </div>
+
+    <div class="exercise">
+        <h2>Exercise 3: Error Handling with try/catch</h2>
+        <p>Proper error handling in async functions.</p>
+        <button onclick="runExercise3()">Run Exercise 3</button>
+    </div>
+
+    <div class="exercise">
+        <h2>Exercise 4: Loops with async/await</h2>
+        <p>Processing arrays sequentially with await.</p>
+        <button onclick="runExercise4()">Run Exercise 4</button>
+    </div>
+
+    <h2>Output:</h2>
+    <div id="output">Click a button to run an exercise...</div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
