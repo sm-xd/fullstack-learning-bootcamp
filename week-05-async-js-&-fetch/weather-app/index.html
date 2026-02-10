@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App - Week 5 Deliverable</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Weather App</h1>
+            <p class="subtitle">Search for any city to get current weather</p>
+        </header>
+
+        <form id="search-form" class="search-form">
+            <input type="text" id="city-input" placeholder="Enter city name..." autocomplete="off" required>
+            <button type="submit" id="search-btn">
+                <span class="btn-text">Search</span>
+                <span class="btn-loader hidden"></span>
+            </button>
+        </form>
+        <div class="location-div">
+            <button id="location-btn" type="button" class="btn-text">Use my location</button>
+        </div>
+
+        <main id="weather-container" class="weather-container">
+            <!-- initial state -->
+            <div id="initial-state" class="state initial-state">
+                <p>Enter a city name to get started</p>
+            </div>
+            <!-- loading state -->
+            <div id="loading-state" class="state loading-state hidden">
+                <p>Fetching weather data...</p>
+            </div>
+            <!-- error state -->
+            <div id="error-state" class="state error-state hidden">
+                <p id="error-message">Something went wrong</p>
+                <button id="retry-btn" class="retry-btn">Try Again</button>
+            </div>
+            <!-- result state -->
+            <div id="weather-card" class="weather-card hidden">
+                <div class="weather-main">
+                    <h2 id="city-name" class="city-name">London, GB</h2>
+                    <div class="weather-icon-container">
+                        <img id="weather-icon" src="" alt="Weather icon" class="weather-icon">
+                    </div>
+                    <div class="temperature">
+                        <span id="temp-value" class="temp-value">22</span>
+                        <span class="temp-unit">°C</span>
+                    </div>
+                    <p id="weather-description" class="weather-description">Partly Cloudy</p>
+                </div>
+
+                <div class="weather-details">
+                    <div class="detail-item">
+                        <div class="detail-info">
+                            <span class="detail-label">Feels Like</span>
+                            <span id="feels-like" class="detail-value">24°C</span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-info">
+                            <span class="detail-label">Humidity</span>
+                            <span id="humidity" class="detail-value">65%</span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-info">
+                            <span class="detail-label">Wind Speed</span>
+                            <span id="wind-speed" class="detail-value">12 km/h</span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-info">
+                            <span class="detail-label">Visibility</span>
+                            <span id="visibility" class="detail-value">10 km</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>Made by <a href="https://github.com/sm-xd" target="_blank">SM</a></p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
