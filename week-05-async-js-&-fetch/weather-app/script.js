@@ -87,16 +87,7 @@ async function fetchWeatherData(city) {
     const response = await fetch(url);
 
     if (!response.ok) {
-        switch (response.status) {
-            case 401:
-                throw new Error('Invalid API key. Please check your configuration.');
-            case 404:
-                throw new Error(`City "${city}" not found. Please check the spelling.`);
-            case 429:
-                throw new Error('Too many requests. Please try again later.');
-            default:
-                throw new Error(`Failed to fetch weather data (${response.status})`);
-        }
+        handleHttpError(response, city);
     }
 
     const data = await response.json();
@@ -139,11 +130,51 @@ function displayWeather(weather) {
 }
 
 /**
- * Shows error message
+ * Handles error by displaying message and showing error state
  * @param {string} message 
  */
-function displayError(message) {
+function handleError(message) {
     elements.errorMessage.textContent = message;
+    showState('error');
+}
+
+/**
+ * Handles HTTP response errors with appropriate messages
+ * @param {Response} response - The fetch response object
+ * @param {string} [city] - Optional city name for context
+ */
+function handleHttpError(response, city = '') {
+    switch (response.status) {
+        case 401:
+            throw new Error('Invalid API key. Please check your configuration.');
+        case 404:
+            throw new Error(city ? `City "${city}" not found. Please check the spelling.` : 'Location not found.');
+        case 429:
+            throw new Error('Too many requests. Please try again later.');
+        default:
+            throw new Error(`Failed to fetch weather data (${response.status})`);
+    }
+}
+
+/**
+ * Handles geolocation errors with appropriate messages
+ * @param {GeolocationPositionError} error - The geolocation error object
+ */
+function handleGeolocationError(error) {
+    switch (error.code) {
+        case error.PERMISSION_DENIED:
+            handleError('Location permission denied. Please allow access to use this feature.');
+            break;
+        case error.POSITION_UNAVAILABLE:
+            handleError('Location information is unavailable. Please try again later.');
+            break;
+        case error.TIMEOUT:
+            handleError('Location request timed out. Please try again.');
+            break;
+        default:
+            handleError('An unknown error occurred while fetching location.');
+            break;
+    }
 }
 
 /**
@@ -165,16 +196,28 @@ async function getWeather(city) {
         displayWeather(weather);
         showState('success');
 
-        console.log('Weather data:', weather);
-
     } catch (error) {
-        displayError(error.message);
-        showState('error');
-
-        console.error('Weather fetch error:', error);
-
+        handleError(error.message);
     } finally {
         setButtonLoading(false);
+    }
+}
+
+async function getweatherByCoords(position) {
+    const { latitude, longitude } = position.coords;
+    const url = `${CONFIG.BASE_URL}?lat=${latitude}&lon=${longitude}&appid=${CONFIG.API_KEY}&units=${CONFIG.UNITS}`;
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            handleHttpError(response);
+        }
+        const data = await response.json();
+        const weather = formatWeatherData(data);
+        displayWeather(weather);
+        showState('success');
+    }
+    catch (error) {
+        handleError(error.message);
     }
 }
 
@@ -199,46 +242,8 @@ elements.retryBtn.addEventListener('click', () => {
 // location button
 elements.locationBtn.addEventListener('click', () => {
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            async (position) => {
-                const { latitude, longitude } = position.coords;
-                const url = `${CONFIG.BASE_URL}?lat=${latitude}&lon=${longitude}&appid=${CONFIG.API_KEY}&units=${CONFIG.UNITS}`;
-                try {
-                    const response = await fetch(url);
-                    if (!response.ok) {
-                        throw new Error(`Failed to fetch weather data (${response.status})`);
-                    }
-                    const data = await response.json();
-                    const weather = formatWeatherData(data);
-                    displayWeather(weather);
-                    showState('success');
-                }
-                catch (error) {
-                    displayError(error.message);
-                    showState('error');
-                }
-            },
-            (error) => {
-                switch (error.code) {
-                    case error.PERMISSION_DENIED:
-                        displayError('Location permission denied. Please allow access to use this feature.');
-                        break;
-                    case error.POSITION_UNAVAILABLE:
-                        displayError('Location information is unavailable. Please try again later.');
-                        break;
-                    case error.TIMEOUT:
-                        displayError('Location request timed out. Please try again.');
-                        break;
-                    default:
-                        displayError('An unknown error occurred while fetching location.');
-                        break;
-                }
-                showState('error');
-            }
-        );
+        navigator.geolocation.getCurrentPosition(getweatherByCoords, handleGeolocationError);
     } else {
-        displayError('Geolocation is not supported by this browser.');
-        showState('error');
+        handleError('Geolocation is not supported by this browser.');
     }
-}
-)
+})
