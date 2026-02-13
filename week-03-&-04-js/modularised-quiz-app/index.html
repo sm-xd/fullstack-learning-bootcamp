@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Test your knowledge with our interactive quiz app. Answer questions on various topics and see your score instantly!">
+    <title>Quiz App</title>
+    <link rel="preload" href="style.css" as="style">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="header">
+        <h1>Quiz App</h1>
+        <p>Test your knowledge with fun quizzes!</p>
+
+    </header>
+
+    <main class="main-content" id="main-content">
+        <section class="start-screen" id="start-screen">
+            <h2>Welcome to the Quiz!</h2>
+            <p>Test your knowledge with this fun quiz.</p>
+
+            <div class="instructions">
+                <h3>Instructions:</h3>
+                <ul>
+                    <li>You have <strong>60 seconds</strong> to complete the entire quiz</li>
+                    <li>Each question has 4 options - select one answer</li>
+                    <li>Use Previous/Next buttons to navigate between questions</li>
+                    <li>Click Submit on the last question to see your results</li>
+                    <li>Correct answers will be shown in green, incorrect in red</li>
+                </ul>
+            </div>
+
+            <button id="start-quiz-btn">Start Quiz</button>
+        </section>
+
+        <section class="quiz-screen" id="quiz-screen" hidden>
+            <article class="quiz-area" id="quiz-area">
+                <div class="timer-container">
+                    <div class="timer" id="timer" aria-live="polite">Time Left: 60s</div>
+                </div>
+
+                <!-- Mobile Toggle Button -->
+                <button class="question-panel-toggle" id="question-panel-toggle">
+                    Question Index
+                </button>
+
+                <div class="progress-container">
+                    <span id="progress-text">Question 1 of 6</span>
+                </div>
+
+                <div class="question" id="question-text">Question will appear here</div>
+
+                <div class="options-container" id="options-container" role="group" aria-label="Answer options">
+                </div>
+
+                <div class="nav-buttons">
+                    <button id="prev-question-btn" class="btn-secondary" disabled>Previous</button>
+                    <button id="next-question-btn">Next Question</button>
+                </div>
+            </article>
+            
+            <!-- Mobile Overlay -->
+            <div class="mobile-overlay" id="mobile-overlay"></div>
+            
+            <!-- Same panel for both desktop and mobile -->
+            <article class="questions-panel" id="questions-panel">
+            </article>
+        </section>
+
+        <section class="results-screen" id="results-screen" hidden>
+            <h2>Your Results</h2>
+            <p id="final-score">You scored X out of Y!</p>
+            <p id="result-message"></p>
+
+            <div class="results-buttons">
+                <button id="review-btn" class="btn-secondary">Review</button>
+                <button id="restart-quiz-btn">Restart Quiz</button>
+            </div>
+
+            <div id="review-section" class="review-section hidden">
+                <h3>Answer Review</h3>
+                <div id="review-container"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; Made by SM</p>
+    </footer>
+
+    <script type="module" src="script.js"></script>
+</body>
+
+</html>
