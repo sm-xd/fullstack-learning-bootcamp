@@ -1,0 +1,4 @@
+- add selectable pagination
+- modal for movie details 
+- infinite scroll
+- autocomplete

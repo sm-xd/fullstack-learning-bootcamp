@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="no-referrer">
+  <title>Movie Search</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="header_content">
+        <div class="logo">
+          <svg class="logo_icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+            <line x1="7" y1="2" x2="7" y2="22"></line>
+            <line x1="17" y1="2" x2="17" y2="22"></line>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <line x1="2" y1="7" x2="7" y2="7"></line>
+            <line x1="2" y1="17" x2="7" y2="17"></line>
+            <line x1="17" y1="17" x2="22" y2="17"></line>
+            <line x1="17" y1="7" x2="22" y2="7"></line>
+          </svg>
+          <span class="logo_text">MovieSearch</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="container">
+        <section class="search-section">
+          <h1 class="search-section_title">Discover Movies</h1>
+          <p class="search-section_subtitle">Search thousands of movies from the OMDb database</p>
+          
+          <div class="search-box">
+            <svg class="search-box_icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+            <input 
+              type="text" 
+              id="searchInput" 
+              class="search-box_input" 
+              placeholder="Search for movies..."
+              autocomplete="off"
+            >
+            <span id="searchIndicator" class="search-box_indicator hidden">
+              <span class="search-box_spinner"></span>
+            </span>
+          </div>
+        </section>
+
+        <div id="controlsBar" class="controls-bar hidden">
+          <div class="results-count">
+            <span id="resultsCount">0 results</span>
+          </div>
+          <div class="results-per-page">
+            <label for="perPageSelect">Show:</label>
+            <select id="perPageSelect" class="per-page-select">
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="50">50</option>
+            </select>
+            <span>per page</span>
+          </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="state-message hidden">
+          <div class="loader">
+            <div class="loader_bar"></div>
+            <div class="loader_bar"></div>
+            <div class="loader_bar"></div>
+            <div class="loader_bar"></div>
+          </div>
+          <p class="state-message_text">Loading movies...</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="errorState" class="state-message state-message--error hidden">
+          <svg class="state-message_icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <p id="errorMessage" class="state-message_text">Something went wrong. Please try again.</p>
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="state-message">
+          <svg class="state-message_icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
+          <p class="state-message_text">Start typing to search for movies</p>
+        </div>
+
+        <!-- No Results State -->
+        <div id="noResultsState" class="state-message hidden">
+          <svg class="state-message_icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 3l18 18"></path>
+            <circle cx="11" cy="11" r="8"></circle>
+          </svg>
+          <p class="state-message_text">No movies found. Try a different search term.</p>
+        </div>
+
+        <!-- Results Grid -->
+        <section id="resultsGrid" class="results-grid hidden">
+
+        </section>
+
+        <!-- Pagination -->
+        <nav id="pagination" class="pagination hidden">
+          <button id="prevBtn" class="pagination_btn" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="m15 18-6-6 6-6"></path>
+            </svg>
+            <span>Previous</span>
+          </button>
+          <div class="pagination_info">
+            <span id="pageInfo">Page 1 of 1</span>
+          </div>
+          <button id="nextBtn" class="pagination_btn">
+            <span>Next</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="m9 18 6-6-6-6"></path>
+            </svg>
+          </button>
+        </nav>
+      </div>
+    </main>
+
+    <!-- Movie Details Modal -->
+    <div id="movieModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal_backdrop" id="modalBackdrop"></div>
+      <div class="modal_container">
+        <button class="modal_close" id="modalClose" aria-label="Close modal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12"></path>
+          </svg>
+        </button>
+        
+        <div id="modalLoading" class="modal_loading">
+          <div class="loader">
+            <div class="loader_bar"></div>
+            <div class="loader_bar"></div>
+            <div class="loader_bar"></div>
+            <div class="loader_bar"></div>
+          </div>
+          <p>Loading movie details...</p>
+        </div>
+        
+        <div id="modalContent" class="modal_content hidden">
+          <div class="modal_poster">
+            <img id="modalPoster" src="" alt="" referrerpolicy="no-referrer">
+            <div id="modalPosterPlaceholder" class="modal_poster-placeholder hidden">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+                <line x1="7" y1="2" x2="7" y2="22"></line>
+                <line x1="17" y1="2" x2="17" y2="22"></line>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+              </svg>
+            </div>
+          </div>
+          <div class="modal_details">
+            <h2 id="modalTitle" class="modal_title"></h2>
+            <div class="modal_meta">
+              <span id="modalYear"></span>
+              <span id="modalRated"></span>
+              <span id="modalRuntime"></span>
+            </div>
+            <div id="modalRatings" class="modal_ratings"></div>
+            <p id="modalPlot" class="modal_plot"></p>
+            <div class="modal_info-grid">
+              <div class="modal_info-item">
+                <span class="modal_info-label">Director</span>
+                <span id="modalDirector" class="modal_info-value"></span>
+              </div>
+              <div class="modal_info-item">
+                <span class="modal_info-label">Cast</span>
+                <span id="modalActors" class="modal_info-value"></span>
+              </div>
+              <div class="modal_info-item">
+                <span class="modal_info-label">Genre</span>
+                <span id="modalGenre" class="modal_info-value"></span>
+              </div>
+              <div class="modal_info-item">
+                <span class="modal_info-label">Box Office</span>
+                <span id="modalBoxOffice" class="modal_info-value"></span>
+              </div>
+            </div>
+            <a id="modalImdbLink" class="modal_imdb-link" href="" target="_blank" rel="noopener">
+              View on IMDb
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>Powered by <a href="https://www.omdbapi.com/" target="_blank" rel="noopener">OMDb API</a></p>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="storage.js"></script>
+  <script src="api.js"></script>
+  <script src="ui.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
