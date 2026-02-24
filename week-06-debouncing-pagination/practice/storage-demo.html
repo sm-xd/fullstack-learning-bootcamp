@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Storage Demo</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+      line-height: 1.6;
+    }
+    h1 { margin-bottom: 0.5rem; }
+    .subtitle { color: #666; margin-bottom: 2rem; }
+    
+    .storage-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .storage-section {
+      background: #f5f5f7;
+      padding: 1.5rem;
+      border-radius: 12px;
+    }
+    .storage-section h2 {
+      margin-bottom: 0.5rem;
+      font-size: 1.2rem;
+    }
+    .storage-section .description {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+    
+    .input-group {
+      margin-bottom: 1rem;
+    }
+    .input-group label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+      font-size: 0.9rem;
+    }
+    .input-group input {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      font-size: 1rem;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+    }
+    .input-group input:focus {
+      outline: none;
+      border-color: #007aff;
+    }
+    
+    .btn-group {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .btn {
+      flex: 1;
+      padding: 0.5rem;
+      font-size: 0.875rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .btn-primary {
+      background: #007aff;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #0056b3;
+    }
+    .btn-secondary {
+      background: #ddd;
+      color: #333;
+    }
+    .btn-secondary:hover {
+      background: #ccc;
+    }
+    .btn-danger {
+      background: #ff3b30;
+      color: white;
+    }
+    .btn-danger:hover {
+      background: #d63027;
+    }
+    
+    .storage-display {
+      background: #1d1d1f;
+      color: #00ff00;
+      padding: 1rem;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 0.8rem;
+      min-height: 100px;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+    }
+    .comparison-table th,
+    .comparison-table td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    .comparison-table th {
+      background: #f5f5f7;
+      font-weight: 600;
+    }
+    
+    .tip {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 1rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.5rem 0;
+    }
+    
+    .experiment {
+      background: #e8f4fd;
+      border-left: 4px solid #007aff;
+      padding: 1rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.5rem 0;
+    }
+    
+    code {
+      background: #f0f0f0;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    
+    @media (max-width: 768px) {
+      .storage-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>💾 Storage Demo</h1>
+  <p class="subtitle">Compare localStorage vs sessionStorage behavior</p>
+
+  <div class="storage-grid">
+    <!-- localStorage Section -->
+    <div class="storage-section">
+      <h2>📦 localStorage</h2>
+      <p class="description">Persists until manually cleared (survives browser close)</p>
+      
+      <div class="input-group">
+        <label for="localKey">Key</label>
+        <input type="text" id="localKey" placeholder="Enter key name">
+      </div>
+      <div class="input-group">
+        <label for="localValue">Value</label>
+        <input type="text" id="localValue" placeholder="Enter value">
+      </div>
+      
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="saveToLocal()">Save</button>
+        <button class="btn btn-secondary" onclick="loadFromLocal()">Load</button>
+        <button class="btn btn-danger" onclick="clearLocal()">Clear All</button>
+      </div>
+      
+      <div id="localDisplay" class="storage-display">No data stored</div>
+    </div>
+
+    <!-- sessionStorage Section -->
+    <div class="storage-section">
+      <h2>⏳ sessionStorage</h2>
+      <p class="description">Clears when tab closes (temporary storage)</p>
+      
+      <div class="input-group">
+        <label for="sessionKey">Key</label>
+        <input type="text" id="sessionKey" placeholder="Enter key name">
+      </div>
+      <div class="input-group">
+        <label for="sessionValue">Value</label>
+        <input type="text" id="sessionValue" placeholder="Enter value">
+      </div>
+      
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="saveToSession()">Save</button>
+        <button class="btn btn-secondary" onclick="loadFromSession()">Load</button>
+        <button class="btn btn-danger" onclick="clearSession()">Clear All</button>
+      </div>
+      
+      <div id="sessionDisplay" class="storage-display">No data stored</div>
+    </div>
+  </div>
+
+  <!-- Comparison Table -->
+  <h3>Comparison</h3>
+  <table class="comparison-table">
+    <thead>
+      <tr>
+        <th>Feature</th>
+        <th>localStorage</th>
+        <th>sessionStorage</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Persistence</strong></td>
+        <td>Until manually cleared</td>
+        <td>Until tab/window closes</td>
+      </tr>
+      <tr>
+        <td><strong>Scope</strong></td>
+        <td>Shared across all tabs (same origin)</td>
+        <td>Per tab/window only</td>
+      </tr>
+      <tr>
+        <td><strong>Size Limit</strong></td>
+        <td>~5-10 MB (browser dependent)</td>
+        <td>~5-10 MB (browser dependent)</td>
+      </tr>
+      <tr>
+        <td><strong>Common Use Cases</strong></td>
+        <td>User preferences, auth tokens, saved data</td>
+        <td>Temporary form data, session cache</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Tip -->
+  <div class="tip">
+    <strong>💡 Tip:</strong> Both storage types only store strings. 
+    Use <code>JSON.stringify()</code> to save objects and 
+    <code>JSON.parse()</code> to retrieve them.
+  </div>
+
+  <!-- Experiment -->
+  <div class="experiment">
+    <strong>🧪 Try This Experiment:</strong>
+    <ol style="margin-top: 0.5rem; padding-left: 1.5rem;">
+      <li>Save data to both storages</li>
+      <li>Open this page in a <strong>new tab</strong> — localStorage data appears, sessionStorage is empty</li>
+      <li>Close the tab, reopen — localStorage persists, sessionStorage is gone</li>
+      <li>Close the entire browser, reopen — localStorage still persists!</li>
+    </ol>
+  </div>
+
+  <script>
+    // ========================================
+    // localStorage Functions
+    // ========================================
+    function saveToLocal() {
+      const key = document.getElementById('localKey').value;
+      const value = document.getElementById('localValue').value;
+      
+      if (!key) {
+        alert('Please enter a key name');
+        return;
+      }
+      
+      localStorage.setItem(key, value);
+      refreshLocalDisplay();
+    }
+
+    function loadFromLocal() {
+      const key = document.getElementById('localKey').value;
+      
+      if (!key) {
+        alert('Please enter a key name');
+        return;
+      }
+      
+      const value = localStorage.getItem(key);
+      document.getElementById('localValue').value = value || '(not found)';
+    }
+
+    function clearLocal() {
+      localStorage.clear();
+      refreshLocalDisplay();
+    }
+
+    function refreshLocalDisplay() {
+      const display = document.getElementById('localDisplay');
+      const items = [];
+      
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        const value = localStorage.getItem(key);
+        items.push(`"${key}": "${value}"`);
+      }
+      
+      display.textContent = items.length > 0 
+        ? '{\n  ' + items.join(',\n  ') + '\n}'
+        : 'No data stored';
+    }
+
+    // ========================================
+    // sessionStorage Functions
+    // ========================================
+    function saveToSession() {
+      const key = document.getElementById('sessionKey').value;
+      const value = document.getElementById('sessionValue').value;
+      
+      if (!key) {
+        alert('Please enter a key name');
+        return;
+      }
+      
+      sessionStorage.setItem(key, value);
+      refreshSessionDisplay();
+    }
+
+    function loadFromSession() {
+      const key = document.getElementById('sessionKey').value;
+      
+      if (!key) {
+        alert('Please enter a key name');
+        return;
+      }
+      
+      const value = sessionStorage.getItem(key);
+      document.getElementById('sessionValue').value = value || '(not found)';
+    }
+
+    function clearSession() {
+      sessionStorage.clear();
+      refreshSessionDisplay();
+    }
+
+    function refreshSessionDisplay() {
+      const display = document.getElementById('sessionDisplay');
+      const items = [];
+      
+      for (let i = 0; i < sessionStorage.length; i++) {
+        const key = sessionStorage.key(i);
+        const value = sessionStorage.getItem(key);
+        items.push(`"${key}": "${value}"`);
+      }
+      
+      display.textContent = items.length > 0 
+        ? '{\n  ' + items.join(',\n  ') + '\n}'
+        : 'No data stored';
+    }
+
+    // ========================================
+    // Initialize
+    // ========================================
+    refreshLocalDisplay();
+    refreshSessionDisplay();
+  </script>
+</body>
+</html>

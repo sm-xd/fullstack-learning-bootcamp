@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Throttle Demo</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+      line-height: 1.6;
+    }
+    h1 { margin-bottom: 0.5rem; }
+    .subtitle { color: #666; margin-bottom: 2rem; }
+    
+    .demo-section {
+      background: #f5f5f7;
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+    }
+    .demo-section h2 {
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+    
+    .track-area {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      height: 200px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 500;
+      cursor: crosshair;
+      margin-bottom: 1rem;
+    }
+    
+    .log {
+      background: #1d1d1f;
+      color: #00ff00;
+      padding: 1rem;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 0.875rem;
+      height: 150px;
+      overflow-y: auto;
+    }
+    .log p {
+      margin: 0.25rem 0;
+    }
+    .log .timestamp {
+      color: #888;
+    }
+    
+    .counter {
+      display: inline-block;
+      background: #007aff;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      margin-left: 0.5rem;
+    }
+    
+    .explanation {
+      background: #e8f4fd;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 2rem;
+      border-left: 4px solid #007aff;
+    }
+    
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .comparison-item {
+      background: #f5f5f7;
+      padding: 1rem;
+      border-radius: 8px;
+    }
+    .comparison-item h4 {
+      margin-bottom: 0.5rem;
+    }
+    
+    .clear-btn {
+      background: #007aff;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+    .clear-btn:hover {
+      background: #0056b3;
+    }
+    
+    code {
+      background: #f0f0f0;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    pre {
+      background: #f0f0f0;
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>⏱️ Throttle Demo</h1>
+  <p class="subtitle">See how throttle limits function calls to a fixed rate</p>
+
+  <!-- Regular mousemove demo -->
+  <div class="demo-section">
+    <h2>❌ Without Throttle <span id="regularCounter" class="counter">0 calls</span></h2>
+    <div id="regularArea" class="track-area">Move your mouse here</div>
+    <div id="regularLog" class="log"></div>
+    <button class="clear-btn" onclick="clearLog('regularLog'); resetCounter('regular')">Clear</button>
+  </div>
+
+  <!-- Throttled mousemove demo -->
+  <div class="demo-section">
+    <h2>✅ With Throttle (100ms) <span id="throttledCounter" class="counter">0 calls</span></h2>
+    <div id="throttledArea" class="track-area">Move your mouse here</div>
+    <div id="throttledLog" class="log"></div>
+    <button class="clear-btn" onclick="clearLog('throttledLog'); resetCounter('throttled')">Clear</button>
+  </div>
+
+  <!-- Comparison -->
+  <div class="comparison">
+    <div class="comparison-item">
+      <h4>🔄 Debounce</h4>
+      <p>Waits until action <strong>stops</strong>, then fires once.</p>
+      <p><em>Use for: Search input, resize events, form validation</em></p>
+    </div>
+    <div class="comparison-item">
+      <h4>⏱️ Throttle</h4>
+      <p>Fires at a <strong>steady rate</strong> while action continues.</p>
+      <p><em>Use for: Scroll events, mouse tracking, progress updates</em></p>
+    </div>
+  </div>
+
+  <!-- Explanation -->
+  <div class="explanation">
+    <h3>How Throttle Works</h3>
+    <p>
+      Notice how the <strong>regular handler</strong> fires hundreds of times as you move, 
+      while the <strong>throttled handler</strong> fires at most once every 100ms.
+    </p>
+    <p style="margin-top: 0.5rem;">
+      Throttle is perfect for events that fire rapidly but where you still want regular updates.
+    </p>
+  </div>
+
+  <!-- The throttle function explained -->
+  <h3 style="margin-top: 2rem;">The Throttle Function</h3>
+  <pre><code>function throttle(func, limit) {
+  let lastRun = 0;
+  
+  return function(...args) {
+    const now = Date.now();
+    
+    // Only run if enough time has passed
+    if (now - lastRun >= limit) {
+      lastRun = now;
+      func.apply(this, args);
+    }
+  };
+}</code></pre>
+
+  <script>
+    // ========================================
+    // Throttle Function
+    // ========================================
+    function throttle(func, limit) {
+      let lastRun = 0;
+      
+      return function(...args) {
+        const now = Date.now();
+        
+        if (now - lastRun >= limit) {
+          lastRun = now;
+          func.apply(this, args);
+        }
+      };
+    }
+
+    // ========================================
+    // Counters
+    // ========================================
+    const counters = {
+      regular: 0,
+      throttled: 0
+    };
+
+    function updateCounter(type) {
+      counters[type]++;
+      document.getElementById(`${type}Counter`).textContent = `${counters[type]} calls`;
+    }
+
+    function resetCounter(type) {
+      counters[type] = 0;
+      document.getElementById(`${type}Counter`).textContent = '0 calls';
+    }
+
+    // ========================================
+    // Helper Functions
+    // ========================================
+    function getTimestamp() {
+      return new Date().toLocaleTimeString('en-US', { 
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        fractionalSecondDigits: 3
+      });
+    }
+
+    function logToElement(elementId, message) {
+      const log = document.getElementById(elementId);
+      const p = document.createElement('p');
+      p.innerHTML = `<span class="timestamp">[${getTimestamp()}]</span> ${message}`;
+      log.appendChild(p);
+      log.scrollTop = log.scrollHeight;
+      
+      // Keep log from getting too long
+      while (log.children.length > 50) {
+        log.removeChild(log.firstChild);
+      }
+    }
+
+    function clearLog(elementId) {
+      document.getElementById(elementId).innerHTML = '';
+    }
+
+    // ========================================
+    // Event Handlers
+    // ========================================
+    
+    // Regular mousemove - fires on every pixel moved
+    function handleRegularMove(event) {
+      updateCounter('regular');
+      logToElement('regularLog', `x: ${event.offsetX}, y: ${event.offsetY}`);
+    }
+
+    // Throttled mousemove - fires max once per 100ms
+    function handleThrottledMove(event) {
+      updateCounter('throttled');
+      logToElement('throttledLog', `x: ${event.offsetX}, y: ${event.offsetY}`);
+    }
+
+    // Create throttled version
+    const throttledHandler = throttle(handleThrottledMove, 100);
+
+    // ========================================
+    // Event Listeners
+    // ========================================
+    document.getElementById('regularArea')
+      .addEventListener('mousemove', handleRegularMove);
+
+    document.getElementById('throttledArea')
+      .addEventListener('mousemove', throttledHandler);
+  </script>
+</body>
+</html>
