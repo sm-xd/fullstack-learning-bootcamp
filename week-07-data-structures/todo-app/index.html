@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To Do</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1>Tasks</h1>
+      <p class="date" id="date"></p>
+    </header>
+
+    <form id="add-form" class="add-bar" aria-label="Add task">
+      <span class="add-circle">+</span>
+      <div class="add-fields">
+        <input type="text" id="task-input" placeholder="Add a task" required autocomplete="off" maxlength="200">
+        <input type="text" id="tag-input" class="tag-field" placeholder="Tags (comma-separated)" autocomplete="off" maxlength="100">
+      </div>
+      <button type="submit" class="sr-only">Add task</button>
+    </form>
+
+    <div id="tag-bar" class="tag-bar"></div>
+
+    <div class="controls">
+      <div class="filters" role="tablist">
+        <button data-filter="all" class="active" role="tab">All</button>
+        <button data-filter="active" role="tab">Active</button>
+        <button data-filter="done" role="tab">Completed</button>
+      </div>
+      <select id="sort-select" aria-label="Sort">
+        <option value="newest">Newest</option>
+        <option value="oldest">Oldest</option>
+        <option value="alpha">A &ndash; Z</option>
+      </select>
+    </div>
+
+    <p id="empty-state" class="empty-state" hidden>Your task list is empty</p>
+
+    <ul id="task-list" class="task-list" aria-label="Tasks"></ul>
+
+    <footer id="footer" class="footer" hidden>
+      <span id="count"></span>
+      <button id="clear-done" class="clear-btn" hidden>Clear completed</button>
+    </footer>
+  </div>
+
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>
