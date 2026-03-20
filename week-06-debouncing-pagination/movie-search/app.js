@@ -3,9 +3,8 @@ const AppState = {
     currentPage: 1,
     totalPages: 0,
     totalResults: 0,
-    resultsPerPage: 10,
     isLoading: false,
-    debounceTimer: null
+    hasMore: false
 };
 
 function debounce(func, delay) {
@@ -20,6 +19,18 @@ function debounce(func, delay) {
     };
 }
 
+function throttle(func, limit) {
+    let lastCall = 0;
+
+    return function (...args) {
+        const now = Date.now();
+        if (now - lastCall >= limit) {
+            lastCall = now;
+            func.apply(this, args);
+        }
+    };
+}
+
 async function performSearch(searchTerm, page = 1) {
     if (!searchTerm || searchTerm.trim().length < 2) {
         UI.showEmpty();
@@ -30,38 +41,30 @@ async function performSearch(searchTerm, page = 1) {
 
     AppState.isLoading = true;
     AppState.currentSearch = searchTerm.trim();
-    AppState.currentPage = page;
-    AppState.resultsPerPage = UI.getResultsPerPage();
 
-    Storage.saveLastSearch(AppState.currentSearch);
+    if (page === 1) {
+        Storage.saveLastSearch(AppState.currentSearch);
+    }
 
-    const cacheKey = `${AppState.currentSearch}_p${page}_n${AppState.resultsPerPage}`;
-
-    const cached = Storage.getCachedResults(AppState.currentSearch, cacheKey);
+    const cached = Storage.getCachedResults(AppState.currentSearch, page);
     if (cached) {
         handleSearchResults(cached, page);
         AppState.isLoading = false;
         return;
     }
 
-    UI.showLoading();
-    UI.setButtonsDisabled(true);
-
-    let results;
-    if (AppState.resultsPerPage === 10) {
-        results = await API.searchMovies(AppState.currentSearch, page);
+    if (page === 1) {
+        UI.showLoading();
     } else {
-        results = await API.searchMoviesMultiPage(
-            AppState.currentSearch,
-            page,
-            AppState.resultsPerPage
-        );
+        UI.showScrollLoader();
     }
+
+    const results = await API.searchMovies(AppState.currentSearch, page);
 
     handleSearchResults(results, page);
 
     if (results.success) {
-        Storage.cacheResults(AppState.currentSearch, cacheKey, results);
+        Storage.cacheResults(AppState.currentSearch, page, results);
     }
 
     AppState.isLoading = false;
@@ -69,46 +72,43 @@ async function performSearch(searchTerm, page = 1) {
 
 function handleSearchResults(results, page) {
     UI.showSearchIndicator(false);
+    UI.hideScrollLoader();
 
     if (!results.success) {
-        if (results.error === 'Movie not found!' || results.error === 'No movies found') {
-            UI.showNoResults();
-        } else {
-            UI.showError(results.error);
+        if (page === 1) {
+            if (results.error === 'Movie not found!' || results.error === 'No movies found') {
+                UI.showNoResults();
+            } else {
+                UI.showError(results.error);
+            }
         }
+        AppState.hasMore = false;
         return;
     }
 
     if (results.movies.length === 0) {
-        UI.showNoResults();
+        if (page === 1) UI.showNoResults();
+        AppState.hasMore = false;
         return;
     }
 
     AppState.totalResults = results.totalResults;
-    AppState.totalPages = API.calculateTotalPages(results.totalResults, AppState.resultsPerPage);
+    AppState.totalPages = API.calculateTotalPages(results.totalResults, 10);
     AppState.currentPage = page;
+    AppState.hasMore = page < AppState.totalPages;
 
     UI.showControlsBar(AppState.totalResults);
 
-    UI.renderMovies(results.movies);
-    UI.updatePagination(AppState.currentPage, AppState.totalPages);
-    UI.setButtonsDisabled(false);
-}
-
-async function changePage(direction) {
-    const newPage = AppState.currentPage + direction;
-
-    if (newPage < 1 || newPage > AppState.totalPages) return;
-
-    UI.scrollToTop();
-
-    await performSearch(AppState.currentSearch, newPage);
-}
-
-function handlePerPageChange() {
-    if (AppState.currentSearch) {
-        performSearch(AppState.currentSearch, 1);
+    if (page === 1) {
+        UI.renderMovies(results.movies);
+    } else {
+        UI.appendMovies(results.movies);
     }
+}
+
+async function loadMoreMovies() {
+    if (AppState.isLoading || !AppState.hasMore || !AppState.currentSearch) return;
+    await performSearch(AppState.currentSearch, AppState.currentPage + 1);
 }
 
 const debouncedSearch = debounce((searchTerm) => {
@@ -161,15 +161,20 @@ function handleMovieKeydown(event) {
     }
 }
 
+const throttledScroll = throttle(() => {
+    const scrolled = window.scrollY + window.innerHeight;
+    const threshold = document.documentElement.scrollHeight - 300;
+    if (scrolled >= threshold) {
+        loadMoreMovies();
+    }
+}, 200);
+
 function setupEventListeners() {
     UI.elements.searchInput.addEventListener('input', handleSearchInput);
 
     UI.elements.searchInput.addEventListener('keydown', handleSearchKeydown);
 
-    UI.elements.prevBtn.addEventListener('click', () => changePage(-1));
-    UI.elements.nextBtn.addEventListener('click', () => changePage(1));
-
-    UI.elements.perPageSelect.addEventListener('change', handlePerPageChange);
+    window.addEventListener('scroll', throttledScroll);
 
     UI.elements.resultsGrid.addEventListener('click', handleMovieClick);
     UI.elements.resultsGrid.addEventListener('keydown', handleMovieKeydown);

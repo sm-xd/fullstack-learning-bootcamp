@@ -377,6 +377,20 @@ body {
 }
 
 /* ========================================
+   Scroll Loader
+   ======================================== */
+
+.scroll-loader {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.scroll-loader .loader {
+  margin-bottom: 0;
+}
+
+/* ========================================
    Pagination
    ======================================== */
 

@@ -14,7 +14,8 @@ const UI = {
         pageInfo: null,
         controlsBar: null,
         perPageSelect: null,
-        resultsCount: null
+        resultsCount: null,
+        scrollLoader: null
     },
 
     init() {
@@ -33,6 +34,7 @@ const UI = {
         this.elements.controlsBar = document.getElementById('controlsBar');
         this.elements.perPageSelect = document.getElementById('perPageSelect');
         this.elements.resultsCount = document.getElementById('resultsCount');
+        this.elements.scrollLoader = document.getElementById('scrollLoader');
     },
 
     showState(stateName) {
@@ -82,6 +84,21 @@ const UI = {
             const card = this._createMovieCard(movie);
             this.elements.resultsGrid.appendChild(card);
         });
+    },
+
+    appendMovies(movies) {
+        movies.forEach(movie => {
+            const card = this._createMovieCard(movie);
+            this.elements.resultsGrid.appendChild(card);
+        });
+    },
+
+    showScrollLoader() {
+        this.elements.scrollLoader.classList.remove('hidden');
+    },
+
+    hideScrollLoader() {
+        this.elements.scrollLoader.classList.add('hidden');
     },
 
     _createMovieCard(movie) {
